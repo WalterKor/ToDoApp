@@ -3,11 +3,14 @@ const app = express();
 //Json형태로 받아오기위해서
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
-
-
-app.listen(8080, function (params) {
+//MongoDB
+const MongoClient = require('mongodb').MongoClient;
+MongoClient.connect('mongodb+srv://root:koreait@cluster0.swgzj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',(err,client)=>{
+    app.listen(8080, function () {
     console.log('start server');
 });
+});
+
 
 
 app.get('/', function (req, res) {
