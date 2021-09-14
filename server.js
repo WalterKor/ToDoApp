@@ -24,23 +24,20 @@ MongoClient.connect('mongodb+srv://root:koreait@cluster0.swgzj.mongodb.net/myFir
 
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html')
+    res.render('index.ejs')
 });
 
 app.get('/write', function (req, res) {
-    res.sendFile(__dirname + '/write.html')
-});
-
-app.get('/pet', (req, res)=>{
-    res.send('섹스.');
-});
-
-app.get('/beauty', (req, res)=>{
-    res.send('뷰티뷰티.');
+    res.render('write.ejs')
 });
 
 app.get('/list', (req, res)=>{
-    res.render('list.ejs');
+    
+    db.collection('post').find().toArray(function (err, result) {
+        console.log(result);
+        res.render('list.ejs', { posts : result});
+    }); //모든데이터 가져오기
+    
 });
 
 app.post('/add', (req,res)=>{    
