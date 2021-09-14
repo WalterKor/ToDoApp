@@ -41,12 +41,18 @@ app.get('/list', (req, res)=>{
 });
 
 app.post('/add', (req,res)=>{    
+    db.collection('counter').findOne({name: '게시물갯수'}, function (err, result) {
+        console.log(result.totalPost);
+        var 총게시물갯수 = result.totalPost;
+        
+        db.collection('post').insertOne({_id: 총게시물갯수 +1 ,제목 : req.body.title, 날짜: req.body.date },function (err, result) {
+            console.log('Post 저장완료');
+        });    
+    });
 
-    db.collection('post').insertOne({제목 : req.body.title, 날짜: req.body.date },function (err, result) {
-        console.log('Post 저장완료');
-    });    
     console.log(req.body.title);
     console.log(req.body.date);
     res.send('전송완료');
+
 });
 
