@@ -49,12 +49,16 @@
 
       <script>
         $('.delete').click(function(e){
+          var pointer = $(this);
           $.ajax({
             method : "DELETE",
             url : '/delete',
             data : {_id : e.target.dataset.id}
           }).done(function(result){  
-
+              console.log('success');
+              pointer.parent('li').fadeOut();              
+          }).fail(function (xhr, textStatus, errorThrown) {
+            console.log(xhr, textStatus, errorThrown);
           });
         });
         
