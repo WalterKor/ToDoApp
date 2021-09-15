@@ -54,6 +54,13 @@ app.post('/add', (req,res)=>{
     });
     
     res.send('전송완료');
-
 });
 
+app.delete('/delete', function (req, res) {
+
+    req.body._id = parseInt(req.body._id);
+    db.collection('post').deleteOne(req.body, function (err, result) {
+        console.log('삭제완료');
+    });
+    res.send('삭제완료');
+});
