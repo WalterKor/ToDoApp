@@ -44,14 +44,15 @@ app.post('/add', (req,res)=>{
     db.collection('counter').findOne({name: '게시물갯수'}, function (err, result) {
         console.log(result.totalPost);
         var 총게시물갯수 = result.totalPost;
-        
+
         db.collection('post').insertOne({_id: 총게시물갯수 +1 ,제목 : req.body.title, 날짜: req.body.date },function (err, result) {
             console.log('Post 저장완료');
+            db.collection('counter').updateOne({name: '게시물갯수'},{ $inc :  { totalPost:1} }, function (err, result) {
+                if(err) return console.log(err);
+            });    
         });    
     });
-
-    console.log(req.body.title);
-    console.log(req.body.date);
+    
     res.send('전송완료');
 
 });
