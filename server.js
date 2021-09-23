@@ -63,3 +63,14 @@ app.delete('/delete', function (req, res) {
         res.status(200).send({ message : '성공했습니다.'}); //응답코드 성공했습니다.
     })
 });
+
+app.get('/detail', function (req, res) {
+    res.render('detail.ejs');
+})
+
+app.get('/detail/:id', function (req, res) {
+    db.collection('post').findOne({_id: parseInt(req.params.id)}, function (err, result) {
+        console.log(result);
+        res.render('detail.ejs', {data : result});
+    })
+})
