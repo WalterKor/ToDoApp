@@ -55,7 +55,7 @@ app.post('/add', (req,res)=>{
         });    
     });
     
-    res.send('전송완료');
+    res.redirect('/list');
 });
 
 app.delete('/delete', function (req, res) {
@@ -84,6 +84,12 @@ app.get('/edit/:id', function (req, res) {
     })
 })
 
-app.post('/edit/:id', function (req, res) {
-
+app.put('/edit', function (req, res) {
+    //폼에 담긴 제목 데이터, 날짜데터를 가지고 
+    //db.collection에다가 업데이트함
+    db.collection('post').updateOne({_id : parseInt(req.params.id) },{$set : {제목: req.body.title, 날짜: req.body.date }}, function (err, result) {
+        console.log(err);
+        console.log('수정완료')
+    })
+    res.redirect('/list')
 })
