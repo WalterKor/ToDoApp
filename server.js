@@ -6,6 +6,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 //MongoDB
 const MongoClient = require('mongodb').MongoClient;
 var db; //변수 설정
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 
 //set EJS
@@ -73,4 +75,15 @@ app.get('/detail/:id', function (req, res) {
         console.log(result);
         res.render('detail.ejs', {data : result});
     })
+})
+
+app.get('/edit/:id', function (req, res) {
+    db.collection('post').findOne({_id: parseInt(req.params.id)}, function (err, result) {
+        console.log(result);
+        res.render('edit.ejs', {data : result});
+    })
+})
+
+app.post('/edit/:id', function (req, res) {
+
 })
