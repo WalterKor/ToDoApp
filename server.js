@@ -138,19 +138,33 @@ passport.use(new LocalStrategy({
 passport.serializeUser(function (user, done) {
     done(null, user.id)
 });
+
+/*세션데이터가있는지 없는지 찾을때*/
 passport.deserializeUser(function (아이디, done) {
-    done(null,{})
+    db.collection('login').findOne({id : 아이디}, function (err, result) {
+        done(null, result)    
+    })
+    
 });
 
+app.get('/logout',function (req, res) {
+    req.logOut();
+    console.log(session.status);
+    res.redirect('/login');    
+})
+
+
+
+/* mypage 만들기 */
 app.get('/mypage', loginConfirm , function (req, res) {
     res.render('mypage.ejs')
 });
 
 /*미들웨어민들기*/
 function loginConfirm(req, res ,next) {
-    if(res.user){
+    if(req.user){
         next();
     }else{
         res.send('로그인하세요');
     }
-}
+};
