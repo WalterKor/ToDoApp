@@ -103,6 +103,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false
 }));
+
  app.use(passport.initialize());
  app.use(passport.session());
  
@@ -121,15 +122,35 @@ passport.use(new LocalStrategy({
     session: true, /*세션에 정보를 저장할것인지*/
     passReqToCallback: false,
 }, function (입력한아이디, 입력한비번, done) {
-    //console.log(입력한아이디, 입력한비번);
+    console.log(입력한아이디, 입력한비번);
     db.collection('login').findOne({ id: 입력한아이디 }, function (err, result) {
-    if (err) return done(err)
+        if (err) return done(err)
 
-    if (!result) return done(null, false, { message: '존재하지않는 아이디요' })
-    if (입력한비번 == 결과.pw) {
-        return done(null, 결과)
-    } else {
-        return done(null, false, { message: '비번틀렸어요' })
-    }
+        if (!result) return done(null, false, { message: '존재하지않는 아이디요' })
+        if (입력한비번 == result.pw) {  
+            return done(null, result)
+        } else {
+            return done(null, false, { message: '비번틀렸어요' })
+        }
     })
 }));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id)
+});
+passport.deserializeUser(function (아이디, done) {
+    done(null,{})
+});
+
+app.get('/mypage', loginConfirm , function (req, res) {
+    res.render('mypage.ejs')
+});
+
+/*미들웨어민들기*/
+function loginConfirm(req, res ,next) {
+    if(res.user){
+        next();
+    }else{
+        res.send('로그인하세요');
+    }
+}
