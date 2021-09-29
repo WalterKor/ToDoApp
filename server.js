@@ -9,6 +9,8 @@ var db; //변수 설정
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
+// /*dotenv 사용하기위해*/
+// const dotenv = require('dotenvd').config();
 
 //set EJS
 app.set('view engine', 'ejs');
@@ -168,3 +170,11 @@ function loginConfirm(req, res ,next) {
         res.send('로그인하세요');
     }
 };
+
+
+app.get('/search',(req, res)=>{
+    console.log(req.query.value);
+    db.collection('post').find({제목: req.query.value}).toArray((err, result)=>{
+        console.log(result);
+    });
+});
