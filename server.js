@@ -44,30 +44,6 @@ app.get('/list', (req, res)=>{
     
 });
 
-app.post('/add', (req,res)=>{    
-    db.collection('counter').findOne({name: '게시물갯수'}, function (err, result) {
-        console.log(result.totalPost);
-        var 총게시물갯수 = result.totalPost;
-
-        db.collection('post').insertOne({_id: 총게시물갯수 +1 ,제목 : req.body.title, 날짜: req.body.date },function (err, result) {
-            console.log('Post 저장완료');
-            db.collection('counter').updateOne({name: '게시물갯수'},{ $inc :  { totalPost:1} }, function (err, result) {
-                if(err) return console.log(err);
-            });    
-        });    
-    });
-    
-    res.redirect('/list');
-});
-
-app.delete('/delete', function (req, res) {
-    req.body._id = parseInt(req.body._id);
-    db.collection('post').deleteOne(req.body, function (err, result) {
-        console.log('삭제완료');
-        res.status(200).send({ message : '성공했습니다.'}); //응답코드 성공했습니다.
-    })
-});
-
 app.get('/detail', function (req, res) {
     res.render('detail.ejs');
 })
@@ -141,6 +117,40 @@ passport.serializeUser(function (user, done) {
     done(null, user.id)
 });
 
+app.post('/add', (req,res)=>{
+
+    db.collection('counter').findOne({name: '게시물갯수'}, function (err, result) {
+        console.log(result.totalPost);
+
+        var 총게시물갯수 = result.totalPost;
+        var saveData = {_id: 총게시물갯수 +1, 제목 : req.body.title, 날짜: req.body.date, 작성자: req.user._id}
+
+        db.collection('post').insertOne(saveData,function (err, result) {
+            console.log('Post 저장완료');
+            db.collection('counter').updateOne({name: '게시물갯수'},{ $inc :  { totalPost:1} }, function (err, result) {
+                if(err) return console.log(err);
+            });    
+        });    
+    });
+    
+    res.redirect('/list');
+});
+
+app.delete('/delete', function (req, res) {
+    req.body._id = parseInt(req.body._id);
+
+    var delData = {
+        _id: req.body._id,
+        작성자:req.user._id
+    }
+
+    db.collection('post').deleteOne( delData, function (err, result) {
+        console.log('삭제완료');
+        if(err){console.log(err)};
+        res.status(200).send({ message : '성공했습니다.'}); //응답코드 성공했습니다.
+    })
+});
+
 /*세션데이터가있는지 없는지 찾을때*/
 passport.deserializeUser(function (아이디, done) {
     db.collection('login').findOne({id : 아이디}, function (err, result) {
@@ -155,6 +165,11 @@ app.get('/logout',function (req, res) {
     res.redirect('/login');    
 })
 
+app.post('/register',(req, res)=>{
+    db.collection('login').insertOne({ id: req.body.id,pw: req.body.pw },function (err, result){
+        res.redirect('/')
+    });
+});
 
 
 /* mypage 만들기 */
@@ -194,6 +209,9 @@ app.get('/search',(req, res)=>{
         console.log(result);
         res.render('search.ejs',{posts : result});
     });
+
 });
+
+
 
 
