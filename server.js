@@ -173,8 +173,24 @@ function loginConfirm(req, res ,next) {
 
 
 app.get('/search',(req, res)=>{
-    console.log(req.query.value);
-    db.collection('post').find({제목: req.query.value}).toArray((err, result)=>{
+
+    var 검색조건 = [
+        {
+          $search: {
+            index: 'titleSearch',
+            text: {
+              query: req.query.value,
+              path: '제목'  // 제목날짜 둘다 찾고 싶으면 ['제목', '날짜']
+            }
+          }
+        },
+        { $sort:{_id: -1} } ,
+        { $limit: 10}
+        // { $project:{ 제목: 1, _id:0, score: { $meta:"searchScore" } } }
+    ]
+    
+
+    db.collection('post').aggregate(검색조건).toArray((err, result)=>{
         console.log(result);
         res.render('search.ejs',{posts : result});
     });
