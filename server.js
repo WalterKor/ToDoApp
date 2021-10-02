@@ -209,9 +209,9 @@ app.get('/search',(req, res)=>{
         console.log(result);
         res.render('search.ejs',{posts : result});
     });
-
+  
 });
-
+   
 
 
 
