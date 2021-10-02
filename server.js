@@ -186,7 +186,6 @@ function loginConfirm(req, res ,next) {
     }
 };
 
-
 app.get('/search',(req, res)=>{
 
     var 검색조건 = [
@@ -204,7 +203,6 @@ app.get('/search',(req, res)=>{
         // { $project:{ 제목: 1, _id:0, score: { $meta:"searchScore" } } }
     ]
     
-
     db.collection('post').aggregate(검색조건).toArray((err, result)=>{
         console.log(result);
         res.render('search.ejs',{posts : result});
@@ -212,6 +210,7 @@ app.get('/search',(req, res)=>{
   
 });
    
-
+app.use('/shop', require('./routes/shop'));
+app.use('/board', loginConfirm , require('./routes/board'));
 
 
