@@ -209,6 +209,30 @@ app.get('/search',(req, res)=>{
     });
   
 });
+
+let multer = require('multer');
+var storage = multer.diskStorage({
+
+  destination : function(req, file, cb){
+    cb(null, './public/image')
+  },
+  filename : function(req, file, cb){
+    cb(null, file.originalname )
+  }
+
+});
+
+var upload = multer({storage : storage});
+
+app.get('/upload', (req, res)=>{
+    res.render('uploads.ejs');
+});
+
+app.post('/upload', upload.single('profile'), function (req, res) {
+    console.log(req);
+    res.send('업로드 완료');
+})
+
    
 app.use('/shop', require('./routes/shop'));
 app.use('/board', loginConfirm , require('./routes/board'));
