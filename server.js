@@ -212,14 +212,12 @@ app.get('/search',(req, res)=>{
 
 let multer = require('multer');
 var storage = multer.diskStorage({
-
   destination : function(req, file, cb){
     cb(null, './public/image')
   },
   filename : function(req, file, cb){
-    cb(null, file.originalname )
+    cb(null, file.originalname + '날짜' + new Date())
   }
-
 });
 
 var upload = multer({storage : storage});
@@ -229,9 +227,9 @@ app.get('/upload', (req, res)=>{
 });
 
 app.post('/upload', upload.single('profile'), function (req, res) {
-    console.log(req);
     res.send('업로드 완료');
 })
+ 
 
    
 app.use('/shop', require('./routes/shop'));
