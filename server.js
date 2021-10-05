@@ -1,5 +1,10 @@
 const express = require('express');
 const app = express();
+
+const http = require('http').createServer(app);
+const io = require('soket.io').listen(http);
+
+
 //Json형태로 받아오기위해서
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
