@@ -176,7 +176,7 @@ app.post('/register',(req, res)=>{
     });
 });
 
-
+  
 /* mypage 만들기 */
 app.get('/mypage', loginConfirm , function (req, res) {
     res.render('mypage.ejs')
